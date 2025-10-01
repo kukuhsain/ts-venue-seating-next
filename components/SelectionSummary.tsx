@@ -1,6 +1,7 @@
 'use client';
 
 import { SelectedSeat } from '@/types/venue';
+import { ShoppingCart, X, Trash2, CreditCard } from 'lucide-react';
 
 interface SelectionSummaryProps {
   selectedSeats: SelectedSeat[];
@@ -20,15 +21,17 @@ export default function SelectionSummary({
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <ShoppingCart className="w-5 h-5" />
           Selected Seats ({selectedSeats.length}/8)
         </h3>
         {selectedSeats.length > 0 && (
           <button
             onClick={onClearSelection}
-            className="text-sm text-red-600 hover:text-red-800 font-medium"
+            className="text-sm text-red-600 hover:text-red-800 font-medium flex items-center gap-1"
             aria-label="Clear all selected seats"
           >
+            <Trash2 className="w-4 h-4" />
             Clear All
           </button>
         )}
@@ -63,19 +66,7 @@ export default function SelectionSummary({
                     className="text-red-600 hover:text-red-800"
                     aria-label={`Remove seat ${seat.sectionLabel} Row ${seat.rowIndex} Seat ${seat.col}`}
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -92,10 +83,11 @@ export default function SelectionSummary({
               </span>
             </div>
             <button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               disabled={selectedSeats.length === 0}
               aria-label={`Continue to checkout with ${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''}`}
             >
+              <CreditCard className="w-5 h-5" />
               Continue to Checkout
             </button>
             {selectedSeats.length === 8 && (

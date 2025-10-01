@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Venue, Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
+import { MapPin, Keyboard } from 'lucide-react';
 
 const PRICE_TIERS: Record<number, number> = {
   1: 150,
@@ -144,7 +145,8 @@ export default function SeatingMap() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
               <div className="mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">
+                <h2 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <MapPin className="w-5 h-5" />
                   Seating Map
                 </h2>
                 <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
@@ -172,7 +174,8 @@ export default function SeatingMap() {
 
                 {/* Keyboard Navigation Info */}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1.5">
+                    <Keyboard className="w-4 h-4" />
                     Keyboard Navigation
                   </h3>
                   <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">

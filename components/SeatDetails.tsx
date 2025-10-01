@@ -1,6 +1,7 @@
 'use client';
 
 import { SelectedSeat } from '@/types/venue';
+import { Info } from 'lucide-react';
 
 interface SeatDetailsProps {
   seat: SelectedSeat | null;
@@ -11,7 +12,8 @@ export default function SeatDetails({ seat, priceTiers }: SeatDetailsProps) {
   if (!seat) {
     return (
       <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+          <Info className="w-5 h-5" />
           Seat Details
         </h3>
         <p className="text-gray-500 text-sm">
@@ -30,7 +32,10 @@ export default function SeatDetails({ seat, priceTiers }: SeatDetailsProps) {
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Seat Details</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Info className="w-5 h-5" />
+        Seat Details
+      </h3>
       <div className="space-y-3">
         <div>
           <span className="text-sm text-gray-500">Section</span>
