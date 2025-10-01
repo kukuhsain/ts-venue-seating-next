@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
-import { MapPin, Keyboard, Flame } from 'lucide-react';
+import { MapPin, Keyboard, Flame, Moon, Sun } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useVenue } from '@/hooks/useVenue';
+import { useDarkMode } from '@/hooks/useDarkMode';
 
 const PRICE_TIERS: Record<number, number> = {
   1: 150,
@@ -30,6 +31,7 @@ export default function SeatingMap() {
   );
   const [focusedSeat, setFocusedSeat] = useState<SelectedSeat | null>(null);
   const [isHeatMapEnabled, setIsHeatMapEnabled] = useState(false);
+  const [isDarkMode, toggleDarkMode] = useDarkMode();
 
   const handleSeatClick = (
     seat: Seat,
@@ -119,16 +121,16 @@ export default function SeatingMap() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-gray-600">Loading venue...</div>
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="text-xl text-gray-600 dark:text-gray-400">Loading venue...</div>
       </div>
     );
   }
 
   if (error || !venue) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-red-600">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="text-xl text-red-600 dark:text-red-400">
           {error ? error.message : 'Failed to load venue data'}
         </div>
       </div>
@@ -141,20 +143,39 @@ export default function SeatingMap() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8 transition-colors">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{venue.name}</h1>
-        <p className="text-gray-600 mb-6">
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{venue.name}</h1>
+          <button
+            onClick={toggleDarkMode}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+            aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
+          >
+            {isDarkMode ? (
+              <>
+                <Sun className="w-5 h-5" />
+                Light
+              </>
+            ) : (
+              <>
+                <Moon className="w-5 h-5" />
+                Dark
+              </>
+            )}
+          </button>
+        </div>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
           Select up to 8 seats for your event
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Seating Map */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 transition-colors">
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                     <MapPin className="w-5 h-5" />
                     Seating Map
                   </h2>
@@ -162,18 +183,18 @@ export default function SeatingMap() {
                     onClick={() => setIsHeatMapEnabled(!isHeatMapEnabled)}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${
                       isHeatMapEnabled
-                        ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                     }`}
                     aria-label="Toggle heat-map view"
                     aria-pressed={isHeatMapEnabled}
                   >
-                    <Flame className={`w-4 h-4 ${isHeatMapEnabled ? 'text-orange-600' : ''}`} />
+                    <Flame className={`w-4 h-4 ${isHeatMapEnabled ? 'text-orange-600 dark:text-orange-400' : ''}`} />
                     Heat-map
                   </button>
                 </div>
                 {isHeatMapEnabled ? (
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-full bg-red-500"></div>
                       <span>$150 (Tier 1)</span>
@@ -192,7 +213,7 @@ export default function SeatingMap() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                     <div className="flex items-center gap-2">
                       <div className="w-4 h-4 rounded-full bg-blue-500"></div>
                       <span>Available</span>
@@ -217,30 +238,30 @@ export default function SeatingMap() {
                 )}
 
                 {/* Keyboard Navigation Info */}
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                  <h3 className="text-sm font-semibold text-gray-900 mb-2 flex items-center gap-1.5">
+                <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-1.5">
                     <Keyboard className="w-4 h-4" />
                     Keyboard Navigation
                   </h3>
-                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
                     <div className="flex items-center gap-1">
-                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
                         Tab
                       </kbd>
                       <span>Navigate</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
                         Enter
                       </kbd>
                       <span>/</span>
-                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
                         Space
                       </kbd>
                       <span>Select</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                      <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded text-xs font-mono">
                         Shift + Tab
                       </kbd>
                       <span>Back</span>
@@ -249,7 +270,7 @@ export default function SeatingMap() {
                 </div>
               </div>
 
-              <div className="border border-gray-200 rounded-lg overflow-auto">
+              <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-auto bg-white dark:bg-gray-900">
                 <svg
                   width={venue.map.width}
                   height={venue.map.height}
