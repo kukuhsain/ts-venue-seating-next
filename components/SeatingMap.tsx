@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Venue, Seat, SelectedSeat } from '@/types/venue';
+import { useState } from 'react';
+import { Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
 import { MapPin, Keyboard } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useVenue } from '@/hooks/useVenue';
 
 const PRICE_TIERS: Record<number, number> = {
   1: 150,
@@ -15,27 +16,12 @@ const PRICE_TIERS: Record<number, number> = {
 };
 
 export default function SeatingMap() {
-  const [venue, setVenue] = useState<Venue | null>(null);
+  const { venue, loading, error } = useVenue('/venue2.json');
   const [selectedSeats, setSelectedSeats, clearSelectedSeats] = useLocalStorage<SelectedSeat[]>(
     'venue-selected-seats',
     []
   );
   const [focusedSeat, setFocusedSeat] = useState<SelectedSeat | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Load venue data
-  useEffect(() => {
-    fetch('/venue2.json')
-      .then((res) => res.json())
-      .then((data: Venue) => {
-        setVenue(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Failed to load venue data:', err);
-        setLoading(false);
-      });
-  }, []);
 
   const handleSeatClick = (
     seat: Seat,
@@ -124,10 +110,12 @@ export default function SeatingMap() {
     );
   }
 
-  if (!venue) {
+  if (error || !venue) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-red-600">Failed to load venue data</div>
+        <div className="text-xl text-red-600">
+          {error ? error.message : 'Failed to load venue data'}
+        </div>
       </div>
     );
   }
