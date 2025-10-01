@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
-import { MapPin, Keyboard } from 'lucide-react';
+import { MapPin, Keyboard, Flame } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useVenue } from '@/hooks/useVenue';
 
@@ -15,6 +15,13 @@ const PRICE_TIERS: Record<number, number> = {
   4: 50,
 };
 
+const PRICE_TIER_COLORS: Record<number, string> = {
+  1: '#ef4444', // red-500 - Most expensive
+  2: '#f97316', // orange-500
+  3: '#eab308', // yellow-500
+  4: '#22c55e', // green-500 - Least expensive
+};
+
 export default function SeatingMap() {
   const { venue, loading, error } = useVenue('/venue2.json');
   const [selectedSeats, setSelectedSeats, clearSelectedSeats] = useLocalStorage<SelectedSeat[]>(
@@ -22,6 +29,7 @@ export default function SeatingMap() {
     []
   );
   const [focusedSeat, setFocusedSeat] = useState<SelectedSeat | null>(null);
+  const [isHeatMapEnabled, setIsHeatMapEnabled] = useState(false);
 
   const handleSeatClick = (
     seat: Seat,
@@ -65,10 +73,17 @@ export default function SeatingMap() {
   };
 
   const getSeatColor = (seat: Seat) => {
+    // If heat-map is enabled, color by price tier
+    if (isHeatMapEnabled && seat.status === 'available') {
+      return PRICE_TIER_COLORS[seat.priceTier] || '#6b7280';
+    }
+
+    // Show selected seats in green
     if (selectedSeats.some((s) => s.id === seat.id)) {
       return '#10b981'; // green-500
     }
 
+    // Otherwise, color by status
     switch (seat.status) {
       case 'available':
         return '#3b82f6'; // blue-500
@@ -138,32 +153,68 @@ export default function SeatingMap() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
               <div className="mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
-                  Seating Map
-                </h2>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    <span>Available</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
-                    <span>Selected</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-amber-500"></div>
-                    <span>Reserved</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-gray-500"></div>
-                    <span>Sold</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full bg-violet-500"></div>
-                    <span>Held</span>
-                  </div>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <MapPin className="w-5 h-5" />
+                    Seating Map
+                  </h2>
+                  <button
+                    onClick={() => setIsHeatMapEnabled(!isHeatMapEnabled)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${
+                      isHeatMapEnabled
+                        ? 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                    aria-label="Toggle heat-map view"
+                    aria-pressed={isHeatMapEnabled}
+                  >
+                    <Flame className={`w-4 h-4 ${isHeatMapEnabled ? 'text-orange-600' : ''}`} />
+                    Heat-map
+                  </button>
                 </div>
+                {isHeatMapEnabled ? (
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                      <span>$150 (Tier 1)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-orange-500"></div>
+                      <span>$100 (Tier 2)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
+                      <span>$75 (Tier 3)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                      <span>$50 (Tier 4)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                      <span>Available</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                      <span>Selected</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-amber-500"></div>
+                      <span>Reserved</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-gray-500"></div>
+                      <span>Sold</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full bg-violet-500"></div>
+                      <span>Held</span>
+                    </div>
+                  </div>
+                )}
 
                 {/* Keyboard Navigation Info */}
                 <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
