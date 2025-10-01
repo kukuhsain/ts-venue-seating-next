@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
-import { MapPin, Keyboard, Flame, Moon, Sun } from 'lucide-react';
+import { MapPin, Keyboard, Flame, Moon, Sun, Users } from 'lucide-react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useVenue } from '@/hooks/useVenue';
 import { useDarkMode } from '@/hooks/useDarkMode';
@@ -32,6 +32,7 @@ export default function SeatingMap() {
   const [focusedSeat, setFocusedSeat] = useState<SelectedSeat | null>(null);
   const [isHeatMapEnabled, setIsHeatMapEnabled] = useState(false);
   const [isDarkMode, toggleDarkMode] = useDarkMode();
+  const [adjacentSeatsCount, setAdjacentSeatsCount] = useState(2);
 
   const handleSeatClick = (
     seat: Seat,
@@ -117,6 +118,48 @@ export default function SeatingMap() {
   const clearSelection = () => {
     clearSelectedSeats();
     setFocusedSeat(null);
+  };
+
+  const findAdjacentSeats = (count: number) => {
+    if (!venue) return;
+
+    // Search through all sections and rows to find adjacent available seats
+    for (const section of venue.sections) {
+      for (const row of section.rows) {
+        const availableSeats = row.seats.filter((seat) => seat.status === 'available');
+        
+        // Check for consecutive seats
+        for (let i = 0; i <= availableSeats.length - count; i++) {
+          const potentialSeats = availableSeats.slice(i, i + count);
+          
+          // Verify seats are truly adjacent by checking column numbers
+          let isAdjacent = true;
+          for (let j = 1; j < potentialSeats.length; j++) {
+            if (potentialSeats[j].col - potentialSeats[j - 1].col !== 1) {
+              isAdjacent = false;
+              break;
+            }
+          }
+          
+          if (isAdjacent && potentialSeats.length === count) {
+            // Found adjacent seats! Select them
+            const seatsToSelect: SelectedSeat[] = potentialSeats.map((seat) => ({
+              ...seat,
+              sectionId: section.id,
+              sectionLabel: section.label,
+              rowIndex: row.index,
+            }));
+            
+            setSelectedSeats(seatsToSelect);
+            setFocusedSeat(seatsToSelect[0]);
+            return;
+          }
+        }
+      }
+    }
+    
+    // If no adjacent seats found, alert the user
+    alert(`Could not find ${count} adjacent available seats. Try a smaller number.`);
   };
 
   if (loading) {
@@ -236,6 +279,37 @@ export default function SeatingMap() {
                     </div>
                   </div>
                 )}
+
+                {/* Find Adjacent Seats */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-1.5">
+                    <Users className="w-4 h-4" />
+                    Find Adjacent Seats
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={adjacentSeatsCount}
+                      onChange={(e) => setAdjacentSeatsCount(parseInt(e.target.value))}
+                      className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-3 py-1.5 text-sm text-gray-900 dark:text-white cursor-pointer outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                      aria-label="Number of adjacent seats"
+                    >
+                      <option value="2">2 seats</option>
+                      <option value="3">3 seats</option>
+                      <option value="4">4 seats</option>
+                      <option value="5">5 seats</option>
+                      <option value="6">6 seats</option>
+                      <option value="7">7 seats</option>
+                      <option value="8">8 seats</option>
+                    </select>
+                    <button
+                      onClick={() => findAdjacentSeats(adjacentSeatsCount)}
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium py-1.5 px-4 rounded transition-colors"
+                      aria-label={`Find ${adjacentSeatsCount} adjacent seats`}
+                    >
+                      Find Seats
+                    </button>
+                  </div>
+                </div>
 
                 {/* Keyboard Navigation Info */}
                 <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
