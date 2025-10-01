@@ -5,6 +5,7 @@ import { Venue, Seat, SelectedSeat } from '@/types/venue';
 import SeatDetails from '@/components/SeatDetails';
 import SelectionSummary from '@/components/SelectionSummary';
 import { MapPin, Keyboard } from 'lucide-react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 const PRICE_TIERS: Record<number, number> = {
   1: 150,
@@ -15,10 +16,14 @@ const PRICE_TIERS: Record<number, number> = {
 
 export default function SeatingMap() {
   const [venue, setVenue] = useState<Venue | null>(null);
-  const [selectedSeats, setSelectedSeats] = useState<SelectedSeat[]>([]);
+  const [selectedSeats, setSelectedSeats, clearSelectedSeats] = useLocalStorage<SelectedSeat[]>(
+    'venue-selected-seats',
+    []
+  );
   const [focusedSeat, setFocusedSeat] = useState<SelectedSeat | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Load venue data
   useEffect(() => {
     fetch('/venue2.json')
       .then((res) => res.json())
@@ -107,7 +112,7 @@ export default function SeatingMap() {
   };
 
   const clearSelection = () => {
-    setSelectedSeats([]);
+    clearSelectedSeats();
     setFocusedSeat(null);
   };
 
