@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Venue, Seat, SelectedSeat } from '@/types/venue';
-import SeatDetails from './SeatDetails';
-import SelectionSummary from './SelectionSummary';
+import SeatDetails from '@/components/SeatDetails';
+import SelectionSummary from '@/components/SelectionSummary';
 
 const PRICE_TIERS: Record<number, number> = {
   1: 150,
@@ -243,7 +243,6 @@ export default function SeatingMap() {
 
           {/* Sidebar with Details and Summary */}
           <div className="lg:col-span-1 space-y-6">
-            <SeatDetails seat={focusedSeat} priceTiers={PRICE_TIERS} />
             <SelectionSummary
               selectedSeats={selectedSeats}
               priceTiers={PRICE_TIERS}
@@ -253,6 +252,7 @@ export default function SeatingMap() {
                 setSelectedSeats(selectedSeats.filter((s) => s.id !== seatId))
               }
             />
+            <SeatDetails seat={focusedSeat} priceTiers={PRICE_TIERS} />
           </div>
         </div>
       </div>
