@@ -19,7 +19,7 @@ export default function SeatingMap() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/venue.json')
+    fetch('/venue2.json')
       .then((res) => res.json())
       .then((data: Venue) => {
         setVenue(data);
