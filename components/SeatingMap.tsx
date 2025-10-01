@@ -132,9 +132,9 @@ export default function SeatingMap() {
             <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                  Seating Chart
+                  Seating Map
                 </h2>
-                <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-blue-500"></div>
                     <span>Available</span>
@@ -166,26 +166,6 @@ export default function SeatingMap() {
                   className="w-full h-auto"
                   style={{ maxHeight: '600px' }}
                 >
-                  {/* Stage indicator */}
-                  <rect
-                    x={venue.map.width / 2 - 150}
-                    y={20}
-                    width={300}
-                    height={40}
-                    fill="#1f2937"
-                    rx={4}
-                  />
-                  <text
-                    x={venue.map.width / 2}
-                    y={45}
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="18"
-                    fontWeight="bold"
-                  >
-                    STAGE
-                  </text>
-
                   {venue.sections.map((section) =>
                     section.rows.map((row) =>
                       row.seats.map((seat) => {
