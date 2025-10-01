@@ -15,7 +15,7 @@ export default function SeatDetails({ seat, priceTiers }: SeatDetailsProps) {
           Seat Details
         </h3>
         <p className="text-gray-500 text-sm">
-          Click or hover over a seat to view details
+          Click, hover, or navigate with keyboard to view seat details
         </p>
       </div>
     );

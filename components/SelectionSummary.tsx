@@ -27,6 +27,7 @@ export default function SelectionSummary({
           <button
             onClick={onClearSelection}
             className="text-sm text-red-600 hover:text-red-800 font-medium"
+            aria-label="Clear all selected seats"
           >
             Clear All
           </button>
@@ -35,7 +36,7 @@ export default function SelectionSummary({
 
       {selectedSeats.length === 0 ? (
         <p className="text-gray-500 text-sm">
-          No seats selected. Click on available seats to select them.
+          No seats selected. Click or use keyboard to select available seats.
         </p>
       ) : (
         <>
@@ -60,7 +61,7 @@ export default function SelectionSummary({
                   <button
                     onClick={() => onRemoveSeat(seat.id)}
                     className="text-red-600 hover:text-red-800"
-                    aria-label="Remove seat"
+                    aria-label={`Remove seat ${seat.sectionLabel} Row ${seat.rowIndex} Seat ${seat.col}`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -91,8 +92,9 @@ export default function SelectionSummary({
               </span>
             </div>
             <button
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={selectedSeats.length === 0}
+              aria-label={`Continue to checkout with ${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''}`}
             >
               Continue to Checkout
             </button>

@@ -59,6 +59,19 @@ export default function SeatingMap() {
     }
   };
 
+  const handleSeatKeyDown = (
+    e: React.KeyboardEvent,
+    seat: Seat,
+    sectionId: string,
+    sectionLabel: string,
+    rowIndex: number
+  ) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleSeatClick(seat, sectionId, sectionLabel, rowIndex);
+    }
+  };
+
   const getSeatColor = (seat: Seat) => {
     if (selectedSeats.some((s) => s.id === seat.id)) {
       return '#10b981'; // green-500
@@ -134,7 +147,7 @@ export default function SeatingMap() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-3">
                   Seating Map
                 </h2>
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-4 h-4 rounded-full bg-blue-500"></div>
                     <span>Available</span>
@@ -156,6 +169,37 @@ export default function SeatingMap() {
                     <span>Held</span>
                   </div>
                 </div>
+
+                {/* Keyboard Navigation Info */}
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <h3 className="text-sm font-semibold text-gray-900 mb-2">
+                    Keyboard Navigation
+                  </h3>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                        Tab
+                      </kbd>
+                      <span>Navigate</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                        Enter
+                      </kbd>
+                      <span>/</span>
+                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                        Space
+                      </kbd>
+                      <span>Select</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <kbd className="px-1.5 py-0.5 bg-white border border-gray-300 rounded text-xs font-mono">
+                        Shift + Tab
+                      </kbd>
+                      <span>Back</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="border border-gray-200 rounded-lg overflow-auto">
@@ -174,6 +218,9 @@ export default function SeatingMap() {
                         const transformedY =
                           seat.y * section.transform.scale + section.transform.y;
 
+                        const isSelected = selectedSeats.some((s) => s.id === seat.id);
+                        const seatLabel = `${section.label}, Row ${row.index}, Seat ${seat.col}, Price $${PRICE_TIERS[seat.priceTier]}, ${seat.status}${isSelected ? ', currently selected' : ''}`;
+
                         return (
                           <circle
                             key={seat.id}
@@ -185,11 +232,29 @@ export default function SeatingMap() {
                             strokeWidth={getSeatStrokeWidth(seat)}
                             className={
                               seat.status === 'available'
-                                ? 'cursor-pointer hover:opacity-80 transition-opacity'
+                                ? 'cursor-pointer hover:opacity-80 transition-opacity focus:outline-none'
                                 : 'cursor-not-allowed'
                             }
+                            style={
+                              seat.status === 'available' && focusedSeat?.id === seat.id
+                                ? { filter: 'drop-shadow(0 0 4px rgba(255, 255, 255, 0.8))' }
+                                : undefined
+                            }
+                            tabIndex={seat.status === 'available' ? 0 : -1}
+                            role={seat.status === 'available' ? 'button' : undefined}
+                            aria-label={seatLabel}
+                            aria-pressed={seat.status === 'available' ? isSelected : undefined}
                             onClick={() =>
                               handleSeatClick(
+                                seat,
+                                section.id,
+                                section.label,
+                                row.index
+                              )
+                            }
+                            onKeyDown={(e) =>
+                              handleSeatKeyDown(
+                                e,
                                 seat,
                                 section.id,
                                 section.label,
@@ -209,9 +274,20 @@ export default function SeatingMap() {
                                 setFocusedSeat(null);
                               }
                             }}
-                          >
-                            <title>{seat.id}</title>
-                          </circle>
+                            onFocus={() =>
+                              setFocusedSeat({
+                                ...seat,
+                                sectionId: section.id,
+                                sectionLabel: section.label,
+                                rowIndex: row.index,
+                              })
+                            }
+                            onBlur={() => {
+                              if (focusedSeat?.id === seat.id) {
+                                setFocusedSeat(null);
+                              }
+                            }}
+                          />
                         );
                       })
                     )
