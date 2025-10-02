@@ -36,7 +36,23 @@ export default function SeatDetails({ seat, priceTiers }: SeatDetailsProps) {
         <Info className="w-5 h-5" />
         Seat Details
       </h3>
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+        <div>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Seat ID</span>
+          <p className="font-mono font-bold text-gray-700 dark:text-gray-300">{seat.id}</p>
+        </div>
+        <div>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Status</span>
+          <p>
+            <span
+              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                statusColors[seat.status]
+              }`}
+            >
+              {seat.status.charAt(0).toUpperCase() + seat.status.slice(1)}
+            </span>
+          </p>
+        </div>
         <div>
           <span className="text-sm text-gray-500 dark:text-gray-400">Section</span>
           <p className="font-semibold text-gray-900 dark:text-white">{seat.sectionLabel}</p>
@@ -54,22 +70,6 @@ export default function SeatDetails({ seat, priceTiers }: SeatDetailsProps) {
           <p className="font-semibold text-gray-900 dark:text-white">
             ${priceTiers[seat.priceTier]}
           </p>
-        </div>
-        <div>
-          <span className="text-sm text-gray-500 dark:text-gray-400">Status</span>
-          <p>
-            <span
-              className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                statusColors[seat.status]
-              }`}
-            >
-              {seat.status.charAt(0).toUpperCase() + seat.status.slice(1)}
-            </span>
-          </p>
-        </div>
-        <div>
-          <span className="text-sm text-gray-500 dark:text-gray-400">Seat ID</span>
-          <p className="font-mono text-sm text-gray-700 dark:text-gray-300">{seat.id}</p>
         </div>
       </div>
     </div>
