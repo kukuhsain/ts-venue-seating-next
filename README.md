@@ -85,13 +85,6 @@ npm start
 pnpm start
 ```
 
-## 🎨 Price Tiers
-
-- **Tier 1**: $150 (Premium seats)
-- **Tier 2**: $100 (Standard seats)
-- **Tier 3**: $75 (Economy seats)
-- **Tier 4**: $50 (Budget seats)
-
 ## 🛠️ Tech Stack
 
 - **Framework**: Next.js 15
@@ -99,35 +92,3 @@ pnpm start
 - **Styling**: Tailwind CSS v4
 - **Icons**: Lucide React
 - **Package Manager**: pnpm
-
-## 📁 Project Structure
-
-```
-ts-venue-seating-next/
-├── app/                 # Next.js app directory
-├── components/          # React components
-│   ├── SeatingMap.tsx   # Main seating map component
-│   ├── SeatDetails.tsx  # Seat details panel
-│   └── SelectionSummary.tsx # Selected seats summary
-├── hooks/              # Custom React hooks
-│   ├── useDarkMode.ts  # Dark mode management
-│   ├── useLocalStorage.ts # Local storage persistence
-│   └── useVenue.ts     # Venue data fetching
-├── types/              # TypeScript type definitions
-│   └── venue.ts        # Venue and seat types
-└── public/             # Static assets
-    └── venue.json     # Venue data
-```
-
-## 🔮 Future Enhancements
-
-- Multiple venue support
-- Seat reservation with time limits
-- Zoom and pan controls for large venues
-- Filter seats by price range
-- Export selection as PDF/email
-- Multi-language support
-
-## 📄 License
-
-This project is open source and available under the MIT License.
