@@ -116,7 +116,7 @@ ts-venue-seating-next/
 ├── types/              # TypeScript type definitions
 │   └── venue.ts        # Venue and seat types
 └── public/             # Static assets
-    └── venue2.json     # Venue data
+    └── venue.json     # Venue data
 ```
 
 ## 🔮 Future Enhancements

@@ -24,7 +24,7 @@ const PRICE_TIER_COLORS: Record<number, string> = {
 };
 
 export default function SeatingMap() {
-  const { venue, loading, error } = useVenue('/venue2.json');
+  const { venue, loading, error } = useVenue('/venue.json');
   const [selectedSeats, setSelectedSeats, clearSelectedSeats] = useLocalStorage<SelectedSeat[]>(
     'venue-selected-seats',
     []

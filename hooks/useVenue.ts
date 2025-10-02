@@ -3,7 +3,7 @@ import { Venue } from '@/types/venue';
 
 /**
  * Custom hook to fetch venue data from a JSON file
- * @param venueFile - The path to the venue JSON file (e.g., '/venue2.json')
+ * @param venueFile - The path to the venue JSON file (e.g., '/venue.json')
  * @returns An object containing venue data, loading state, and error
  */
 export function useVenue(venueFile: string) {
