@@ -28,7 +28,7 @@ export default function SelectionSummary({
         {selectedSeats.length > 0 && (
           <button
             onClick={onClearSelection}
-            className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium flex items-center gap-1"
+            className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 font-medium flex items-center gap-1 cursor-pointer"
             aria-label="Clear all selected seats"
           >
             <Trash2 className="w-4 h-4" />
@@ -63,7 +63,7 @@ export default function SelectionSummary({
                   </span>
                   <button
                     onClick={() => onRemoveSeat(seat.id)}
-                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
+                    className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 cursor-pointer"
                     aria-label={`Remove seat ${seat.sectionLabel} Row ${seat.rowIndex} Seat ${seat.col}`}
                   >
                     <X className="w-5 h-5" />
@@ -83,7 +83,7 @@ export default function SelectionSummary({
               </span>
             </div>
             <button
-              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center gap-2"
               disabled={selectedSeats.length === 0}
               aria-label={`Continue to checkout with ${selectedSeats.length} seat${selectedSeats.length !== 1 ? 's' : ''}`}
             >

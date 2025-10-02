@@ -127,11 +127,11 @@ export default function SeatingMap() {
     for (const section of venue.sections) {
       for (const row of section.rows) {
         const availableSeats = row.seats.filter((seat) => seat.status === 'available');
-        
+
         // Check for consecutive seats
         for (let i = 0; i <= availableSeats.length - count; i++) {
           const potentialSeats = availableSeats.slice(i, i + count);
-          
+
           // Verify seats are truly adjacent by checking column numbers
           let isAdjacent = true;
           for (let j = 1; j < potentialSeats.length; j++) {
@@ -140,7 +140,7 @@ export default function SeatingMap() {
               break;
             }
           }
-          
+
           if (isAdjacent && potentialSeats.length === count) {
             // Found adjacent seats! Select them
             const seatsToSelect: SelectedSeat[] = potentialSeats.map((seat) => ({
@@ -149,7 +149,7 @@ export default function SeatingMap() {
               sectionLabel: section.label,
               rowIndex: row.index,
             }));
-            
+
             setSelectedSeats(seatsToSelect);
             setFocusedSeat(seatsToSelect[0]);
             return;
@@ -157,7 +157,7 @@ export default function SeatingMap() {
         }
       }
     }
-    
+
     // If no adjacent seats found, alert the user
     alert(`Could not find ${count} adjacent available seats. Try a smaller number.`);
   };
@@ -192,7 +192,7 @@ export default function SeatingMap() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{venue.name}</h1>
           <button
             onClick={toggleDarkMode}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700"
+            className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700 cursor-pointer"
             aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
           >
             {isDarkMode ? (
@@ -224,11 +224,10 @@ export default function SeatingMap() {
                   </h2>
                   <button
                     onClick={() => setIsHeatMapEnabled(!isHeatMapEnabled)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${
-                      isHeatMapEnabled
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-colors cursor-pointer ${isHeatMapEnabled
                         ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}
+                      }`}
                     aria-label="Toggle heat-map view"
                     aria-pressed={isHeatMapEnabled}
                   >
@@ -303,7 +302,7 @@ export default function SeatingMap() {
                     </select>
                     <button
                       onClick={() => findAdjacentSeats(adjacentSeatsCount)}
-                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium py-1.5 px-4 rounded transition-colors"
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-sm font-medium py-1.5 px-4 rounded transition-colors cursor-pointer"
                       aria-label={`Find ${adjacentSeatsCount} adjacent seats`}
                     >
                       Find Seats
@@ -312,7 +311,7 @@ export default function SeatingMap() {
                 </div>
 
                 {/* Keyboard Navigation Info */}
-                <div className="bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
+                <div className="mt-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600 rounded-lg p-3">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-1.5">
                     <Keyboard className="w-4 h-4" />
                     Keyboard Navigation
